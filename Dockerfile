@@ -12,43 +12,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM debian:jessie
+FROM kz8s/centos
 
 ENV GITHUB_BASEURL https://raw.githubusercontent.com/kubernetes/kubernetes/release-1.2
 ENV STORAGE_BASEURL https://storage.googleapis.com/kubernetes-release/release/v1.2.0
 
-RUN set -eux &&\
-  DEBIAN_FRONTEND=noninteractive apt-get update -y &&\
-  DEBIAN_FRONTEND=noninteractive apt-get -yy -q install \
-    ca-certificates \
-    curl \
+RUN set -ex &&\
+  yum -y update &&\
+  yum -y install \
     ethtool \
     file \
     iptables \
-    socat \
-    util-linux &&\
-  DEBIAN_FRONTEND=noninteractive apt-get autoremove -y &&\
-  DEBIAN_FRONTEND=noninteractive apt-get clean &&\
-  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    socat &&\
+  yum -y clean all
 
 ADD $STORAGE_BASEURL/bin/linux/amd64/hyperkube /hyperkube
 ADD $GITHUB_BASEURL/cluster/saltbase/salt/helpers/safe_format_and_mount /usr/share/google/safe_format_and_mount
 ADD $GITHUB_BASEURL/cluster/saltbase/salt/generate-cert/make-ca-cert.sh /make-ca-cert.sh
 
 COPY manifests /etc/kubernetes/manifests
-
-# COPY master-multi.json /etc/kubernetes/manifests-multi/master.json
-# COPY kube-proxy.json /etc/kubernetes/manifests-multi/kube-proxy.json
-# COPY master.json /etc/kubernetes/manifests/master.json
-# COPY etcd.json /etc/kubernetes/manifests/etcd.json
-# COPY kube-proxy.json /etc/kubernetes/manifests/kube-proxy.json
 COPY setup-files.sh /setup-files.sh
 
 RUN set -eux &&\
   mkdir -p /etc/kubernetes/manifests-multi &&\
-  mv /etc/kubernetes/manifests/master-multi.json /etc/kubernetes/manifests-multi/master.json &&\
-  ln -s /etc/kubernetes/manifests/kube-proxy.json /etc/kubernetes/manifests-multi/kube-proxy.json &&\
-  cp /usr/bin/nsenter /nsenter &&\
+  mv /etc/kubernetes/manifests/master-multi.yml /etc/kubernetes/manifests-multi/master.yml &&\
+  ln -s /etc/kubernetes/manifests/kube-proxy.yml /etc/kubernetes/manifests-multi/kube-proxy.yml &&\
+  ln -s /usr/bin/nsenter /nsenter &&\
   chmod a+rx \
     /hyperkube \
     /usr/share/google/safe_format_and_mount \
