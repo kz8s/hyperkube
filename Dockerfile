@@ -36,14 +36,19 @@ ADD $STORAGE_BASEURL/bin/linux/amd64/hyperkube /hyperkube
 ADD $GITHUB_BASEURL/cluster/saltbase/salt/helpers/safe_format_and_mount /usr/share/google/safe_format_and_mount
 ADD $GITHUB_BASEURL/cluster/saltbase/salt/generate-cert/make-ca-cert.sh /make-ca-cert.sh
 
-COPY master-multi.json /etc/kubernetes/manifests-multi/master.json
-COPY kube-proxy.json /etc/kubernetes/manifests-multi/kube-proxy.json
-COPY master.json /etc/kubernetes/manifests/master.json
-COPY etcd.json /etc/kubernetes/manifests/etcd.json
-COPY kube-proxy.json /etc/kubernetes/manifests/kube-proxy.json
+COPY manifests /etc/kubernetes/manifests
+
+# COPY master-multi.json /etc/kubernetes/manifests-multi/master.json
+# COPY kube-proxy.json /etc/kubernetes/manifests-multi/kube-proxy.json
+# COPY master.json /etc/kubernetes/manifests/master.json
+# COPY etcd.json /etc/kubernetes/manifests/etcd.json
+# COPY kube-proxy.json /etc/kubernetes/manifests/kube-proxy.json
 COPY setup-files.sh /setup-files.sh
 
 RUN set -eux &&\
+  mkdir -p /etc/kubernetes/manifests-multi &&\
+  mv /etc/kubernetes/manifests/master-multi.json /etc/kubernetes/manifests-multi/master.json &&\
+  ln -s /etc/kubernetes/manifests/kube-proxy.json /etc/kubernetes/manifests-multi/kube-proxy.json &&\
   cp /usr/bin/nsenter /nsenter &&\
   chmod a+rx \
     /hyperkube \
