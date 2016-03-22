@@ -19,15 +19,14 @@ ENV STORAGE_BASEURL https://storage.googleapis.com/kubernetes-release/release/v1
 
 RUN set -eux &&\
   DEBIAN_FRONTEND=noninteractive apt-get update -y &&\
-  DEBIAN_FRONTEND=noninteractive apt-get -yy -q \
-    install \
-    iptables \
-    ethtool \
+  DEBIAN_FRONTEND=noninteractive apt-get -yy -q install \
     ca-certificates \
+    curl \
+    ethtool \
     file \
-    util-linux \
+    iptables \
     socat \
-    curl &&\
+    util-linux &&\
   DEBIAN_FRONTEND=noninteractive apt-get autoremove -y &&\
   DEBIAN_FRONTEND=noninteractive apt-get clean &&\
   rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
