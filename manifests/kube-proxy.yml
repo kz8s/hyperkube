@@ -8,7 +8,7 @@
     containers:
       -
         name: "kube-proxy"
-        image: "kz8s/hyperkube-v1.2.0"
+        image: "kz8s/hyperkube:v1.2.0"
         command:
           - /hyperkube
         args:
