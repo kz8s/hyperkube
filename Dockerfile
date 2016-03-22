@@ -13,6 +13,7 @@
 # limitations under the License.
 
 FROM kz8s/centos
+MAINTAINER Jono Wells <jono@kz8s.io>
 
 ENV GITHUB_BASEURL https://raw.githubusercontent.com/kubernetes/kubernetes/release-1.2
 ENV STORAGE_BASEURL https://storage.googleapis.com/kubernetes-release/release/v1.2.0
