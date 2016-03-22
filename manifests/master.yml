@@ -24,7 +24,7 @@
             mountPath: "/srv/kubernetes"
       -
         name: "apiserver"
-        image: "kz8s/hyperkube-v1.2.0"
+        image: "kz8s/hyperkube:v1.2.0"
         command:
           - /hyperkube
         args:
